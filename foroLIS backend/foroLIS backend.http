@@ -1,0 +1,6 @@
+@foroLIS_backend_HostAddress = http://localhost:5094
+
+GET {{foroLIS_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
