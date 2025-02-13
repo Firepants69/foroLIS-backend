@@ -10,7 +10,7 @@ namespace foroLIS_backend.Services
 {
     public class FileService
     {
-        private readonly string _route = Path.Combine(Directory.GetCurrentDirectory(), "Files");
+        private readonly string _route = Path.Combine(Directory.GetCurrentDirectory(), "FilesUploaded");
         private readonly string[] _extensions_shorts = [".png", ".jpg", ".webp"]; // Extensiones con punto
 
         public FileService() { }
@@ -32,7 +32,7 @@ namespace foroLIS_backend.Services
 
             bool isImage = _extensions_shorts.Contains(Path.GetExtension(file.File.FileName.ToLower()));
             string shortPath = null;
-
+            // test
             if (isImage)
             {
                 // shortname
