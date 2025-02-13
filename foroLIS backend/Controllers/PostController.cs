@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using foroLIS_backend.DTOs.FileDto;
 using foroLIS_backend.DTOs.PostDtos;
 using foroLIS_backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,15 +15,21 @@ namespace foroLIS_backend.Controllers
         ICommonService<PostDto, Guid, PostInsertDto, PostUpdateDto> _postService;
         IValidator<PostInsertDto> _postInsertValidator;
         IValidator<PostUpdateDto> _postUpdateValidator;
+        IValidator<FileInsertDto> _uploadValidator;
+        FileService _fileService;
         public PostController(
             ICommonService
             <PostDto, Guid, PostInsertDto, PostUpdateDto> postService
             ,IValidator<PostInsertDto> postInserValidator,
-            IValidator<PostUpdateDto> postUpdateValidator)
+            IValidator<PostUpdateDto> postUpdateValidator,
+            FileService fileService,
+            IValidator<FileInsertDto> uploadValidator)
         {
             _postService = postService;
             _postInsertValidator = postInserValidator;
             _postUpdateValidator = postUpdateValidator;
+            _fileService = fileService;
+            _uploadValidator = uploadValidator;
         }
 
         [HttpGet("{id}")]
@@ -92,6 +99,26 @@ namespace foroLIS_backend.Controllers
             catch(Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpPost("upload")]
+        [RequestSizeLimit(6 * 1024 * 1024)] 
+        public async Task<ActionResult<FileUploadDto>> UploadFile( FileInsertDto file)
+        {
+            var validate = await _uploadValidator.ValidateAsync(file);
+            if (!validate.IsValid)
+            {
+                return BadRequest(validate.Errors);
+            }
+            try
+            {
+               var result = await _fileService.UploadFile(file);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return Conflict(ex.Message);
             }
         }
     }

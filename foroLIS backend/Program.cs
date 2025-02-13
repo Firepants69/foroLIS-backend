@@ -1,5 +1,6 @@
 using FluentValidation;
 using foroLIS_backend.DTOs;
+using foroLIS_backend.DTOs.FileDto;
 using foroLIS_backend.DTOs.PostDtos;
 using foroLIS_backend.DTOs.SurveyDtos;
 using foroLIS_backend.Extensions;
@@ -37,12 +38,14 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICurrentUserService,CurrentService>();
 builder.Services.AddScoped<ICommonService<PostDto, Guid, PostInsertDto, PostUpdateDto>, PostService>();
 builder.Services.AddScoped<ISurveyService<SurveyDto, SurveyInsertDto, UserFieldSurveyDto, UserFieldInsertSurveyDto>,SurveyService>();
+builder.Services.AddScoped<FileService>();
 
 //validators
 builder.Services.AddScoped<IValidator<PostInsertDto>, PostInsertValidator>();
 builder.Services.AddScoped<IValidator<PostUpdateDto>, PostUpdateValidator>();
 builder.Services.AddScoped<IValidator<SurveyInsertDto>, SurveyInsertValidator>();
 builder.Services.AddScoped<IValidator<UserRegisterRequestDto>, UserRegisterRequestValidator>();
+builder.Services.AddScoped<IValidator<FileInsertDto>, FileValidator>();
 
 // repository
 builder.Services.AddScoped<IRepository<Post,PostDto>, PostRepository>();
@@ -92,6 +95,10 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
+
+
 
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJwt(builder.Configuration);

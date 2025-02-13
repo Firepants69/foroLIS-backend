@@ -2,6 +2,6 @@
 {
     public class FileInsertDto
     {
-        public IFormFile formFile;
+        public IFormFile File { get; set; }
     }
 }

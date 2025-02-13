@@ -10,7 +10,7 @@ namespace foroLIS_backend.Validators
             const long Max = 6 * 1024 * 1024; // 6 MB
             string[] extensions = ["png","jpg","mp4","gif","pdf","webp", "webm", "av1"];
 
-            RuleFor(f => f.formFile)
+            RuleFor(f => f.File)
                 .Must(f => f != null && f.Length > 0)
                 .WithMessage("The file cannot be empty.")
                 .Must(f => f.Length <= Max)

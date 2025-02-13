@@ -112,7 +112,7 @@ namespace foroLIS_backend.Services
             {
                 user = await _userService.GetCurrentUserAsync();
             }
-            catch (Exception ex)
+            catch 
             {
                 Errors.Add("User not found");
                 return false;

@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Exeptions\**" />
+    <Compile Remove="Files\**" />
+    <Content Remove="Exeptions\**" />
+    <Content Remove="Files\**" />
+    <EmbeddedResource Remove="Exeptions\**" />
+    <EmbeddedResource Remove="Files\**" />
+    <None Remove="Exeptions\**" />
+    <None Remove="Files\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
@@ -20,13 +31,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Exeptions\" />
-    <Folder Include="Files\" />
   </ItemGroup>
 
 </Project>
