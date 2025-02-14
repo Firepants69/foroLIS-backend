@@ -15,21 +15,23 @@ namespace foroLIS_backend.Controllers
         ICommonService<PostDto, Guid, PostInsertDto, PostUpdateDto> _postService;
         IValidator<PostInsertDto> _postInsertValidator;
         IValidator<PostUpdateDto> _postUpdateValidator;
-        IValidator<FileInsertDto> _uploadValidator;
         FileService _fileService;
+        IValidator<IFormFile> _fileValidator;
         public PostController(
             ICommonService
             <PostDto, Guid, PostInsertDto, PostUpdateDto> postService
             ,IValidator<PostInsertDto> postInserValidator,
+
             IValidator<PostUpdateDto> postUpdateValidator,
-            FileService fileService,
-            IValidator<FileInsertDto> uploadValidator)
+            FileService fileService
+,
+            IValidator<IFormFile> fileValidator)
         {
             _postService = postService;
             _postInsertValidator = postInserValidator;
             _postUpdateValidator = postUpdateValidator;
             _fileService = fileService;
-            _uploadValidator = uploadValidator;
+            _fileValidator = fileValidator;
         }
 
         [HttpGet("{id}")]
@@ -103,13 +105,14 @@ namespace foroLIS_backend.Controllers
         }
         [HttpPost("upload")]
         [RequestSizeLimit(6 * 1024 * 1024)] 
-        public async Task<ActionResult<FileUploadDto>> UploadFile( FileInsertDto file)
+        public async Task<ActionResult<FileUploadDto>> UploadFile( IFormFile file)
         {
-            var validate = await _uploadValidator.ValidateAsync(file);
-            if (!validate.IsValid)
+            var validator = await _fileValidator.ValidateAsync(file);
+            if (!validator.IsValid)
             {
-                return BadRequest(validate.Errors);
+                return BadRequest(validator.Errors);
             }
+
             try
             {
                var result = await _fileService.UploadFile(file);

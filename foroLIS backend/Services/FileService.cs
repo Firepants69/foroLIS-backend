@@ -1,10 +1,9 @@
 ﻿using foroLIS_backend.DTOs.FileDto;
+using foroLIS_backend.Models;
+using foroLIS_backend.Repository;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace foroLIS_backend.Services
 {
@@ -12,26 +11,31 @@ namespace foroLIS_backend.Services
     {
         private readonly string _route = Path.Combine(Directory.GetCurrentDirectory(), "FilesUploaded");
         private readonly string[] _extensions_shorts = [".png", ".jpg", ".webp"]; // Extensiones con punto
+        private readonly IFileRepository<MediaFile> _fileRepository;
+        public FileService(IFileRepository<MediaFile> fileRepository ) 
+        {
+            _fileRepository = fileRepository;   
+        }
 
-        public FileService() { }
-
-        public async Task<FileUploadDto> UploadFile(FileInsertDto file)
+        public async Task<FileUploadDto> UploadFile(IFormFile file)
         {
             if (!Directory.Exists(_route))
             {
                 Directory.CreateDirectory(_route);
             }
 
-            var name = Guid.NewGuid().ToString() + Path.GetExtension(file.File.FileName);
+            var name = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
             var route = Path.Combine(_route, name);
 
             using (var stream = new FileStream(route, FileMode.Create))
             {
-                await file.File.CopyToAsync(stream);
+                await file.CopyToAsync(stream);
             }
 
-            bool isImage = _extensions_shorts.Contains(Path.GetExtension(file.File.FileName.ToLower()));
-            string shortPath = null;
+            bool isImage = _extensions_shorts.Contains(Path.GetExtension(file.FileName.ToLower()));
+            
+            string shortPath = "";
+
             // test
             if (isImage)
             {
@@ -51,6 +55,7 @@ namespace foroLIS_backend.Services
                 }
             }
 
+
             return new FileUploadDto()
             {
                 Name = name,
@@ -61,5 +66,6 @@ namespace foroLIS_backend.Services
                 }
             };
         }
+        
     }
 }

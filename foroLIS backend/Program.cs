@@ -45,11 +45,12 @@ builder.Services.AddScoped<IValidator<PostInsertDto>, PostInsertValidator>();
 builder.Services.AddScoped<IValidator<PostUpdateDto>, PostUpdateValidator>();
 builder.Services.AddScoped<IValidator<SurveyInsertDto>, SurveyInsertValidator>();
 builder.Services.AddScoped<IValidator<UserRegisterRequestDto>, UserRegisterRequestValidator>();
-builder.Services.AddScoped<IValidator<FileInsertDto>, FileValidator>();
+builder.Services.AddScoped<IValidator<IFormFile>,FileValidator>();
 
 // repository
 builder.Services.AddScoped<IRepository<Post,PostDto>, PostRepository>();
 builder.Services.AddScoped<ISurveyRepository<Survey, FieldSurvey, UserFieldSurvey, FieldSurveyDto>, SurveyRepository>();
+builder.Services.AddScoped<IFileRepository<MediaFile>, FileRepository>();
 
 builder.Services.AddScoped<GoogleService>();
 builder.Services.AddHttpContextAccessor();
