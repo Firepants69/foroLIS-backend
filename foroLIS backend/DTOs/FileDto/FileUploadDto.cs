@@ -2,6 +2,7 @@
 {
     public class FileUploadDto
     {
+        public Guid Id { get; set; }
         public string Message = "File upload success";
         public string Name { get; set; }
         public LinksFile Link { get; set; }

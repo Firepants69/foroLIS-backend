@@ -10,11 +10,20 @@ namespace foroLIS_backend.Services
     public class FileService
     {
         private readonly string _route = Path.Combine(Directory.GetCurrentDirectory(), "FilesUploaded");
-        private readonly string[] _extensions_shorts = [".png", ".jpg", ".webp"]; // Extensiones con punto
+        
+        private readonly string[] _extensions_shorts = [".png", ".jpg", ".webp",".jpeg"]; 
+        
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        
         private readonly IFileRepository<MediaFile> _fileRepository;
-        public FileService(IFileRepository<MediaFile> fileRepository ) 
+        
+        private readonly string folderFilesName = "files";
+
+        public FileService(IFileRepository<MediaFile> fileRepository,
+            IHttpContextAccessor httpContextAccessor) 
         {
             _fileRepository = fileRepository;   
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<FileUploadDto> UploadFile(IFormFile file)
@@ -36,10 +45,8 @@ namespace foroLIS_backend.Services
             
             string shortPath = "";
 
-            // test
             if (isImage)
             {
-                // shortname
                 var shortFileName = "short_" + name;
                 shortPath = Path.Combine(_route, shortFileName);
 
@@ -54,15 +61,26 @@ namespace foroLIS_backend.Services
                     await image.SaveAsync(shortPath);
                 }
             }
+            var newFile = new MediaFile()
+            {
+                CreateAt = DateTime.Now,
+                FileName = name,
+                FilePath = route,
+            };
 
+            await _fileRepository.Create(newFile);
+            await _fileRepository.Save();
+            
+            var baseUrl = _httpContextAccessor.HttpContext?.Request.Host.ToString();
 
             return new FileUploadDto()
-            {
+            { 
+                Id = newFile.Id,
                 Name = name,
                 Link = new LinksFile
                 {
-                    Original = route,
-                    Short = isImage ? shortPath : null
+                    Original = $"{baseUrl}/{folderFilesName}/{name}",
+                    Short = isImage ? $"{baseUrl}/{folderFilesName}/short_{name}" : null
                 }
             };
         }

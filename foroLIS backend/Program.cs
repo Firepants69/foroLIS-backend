@@ -11,12 +11,15 @@ using foroLIS_backend.Services;
 using foroLIS_backend.Validators;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
 
 if (string.IsNullOrEmpty(connectionString))
 {
@@ -99,13 +102,13 @@ builder.Services.AddSwaggerGen(c =>
 
 
 
-
-
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigureCors();
 
 var app = builder.Build();
+
+
 app.UseCors("CorsPolicy");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -119,5 +122,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "FilesUploaded")),
+    RequestPath = "/files"
+});
 
 app.Run();
